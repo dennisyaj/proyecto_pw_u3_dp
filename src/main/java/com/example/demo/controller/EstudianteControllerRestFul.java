@@ -1,5 +1,7 @@
 package com.example.demo.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -12,9 +14,10 @@ import com.example.demo.service.IEstudianteService;
 @RestController
 @RequestMapping("/estudiantes")
 public class EstudianteControllerRestFul {
-	
+	//http://localhost:8080/API/Matricula/V1/estudiantes/
+
 	@Autowired
-	IEstudianteService iEstudianteService ;
+	IEstudianteService iEstudianteService;
 
 	public void registrarEstudiante(Estudiante estudiante) {
 	}
@@ -27,6 +30,13 @@ public class EstudianteControllerRestFul {
 		return this.iEstudianteService.encontrar(id);
 	}
 
-	public void borrar(Integer id) {
+	@GetMapping("/buscarPorNombre/{nombre}")
+	public List<Estudiante> buscarPorNombre(@PathVariable("nombre") String nombre) {
+		return this.iEstudianteService.buscarPorNombre(nombre);
+	}
+
+	@GetMapping("/buscarPorApellido/{apellido}")
+	public List<Estudiante> buscarPorApellido(@PathVariable("apellido") String apellido) {
+		return this.iEstudianteService.buscarPorApellido(apellido);
 	}
 }
