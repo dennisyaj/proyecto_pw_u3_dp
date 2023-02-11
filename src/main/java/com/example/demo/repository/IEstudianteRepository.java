@@ -22,4 +22,5 @@ public interface IEstudianteRepository {
 	public List<Estudiante> buscarTodosPorSalario(BigDecimal salario);
 
 	public void eliminar(Integer id);
+	
 }
