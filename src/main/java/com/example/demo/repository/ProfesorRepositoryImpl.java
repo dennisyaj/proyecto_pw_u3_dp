@@ -1,5 +1,7 @@
 package com.example.demo.repository;
 
+import java.util.List;
+
 import org.springframework.stereotype.Repository;
 
 import com.example.demo.model.Profesor;
@@ -29,6 +31,12 @@ public class ProfesorRepositoryImpl implements IProfesorRepository {
 	@Override
 	public Profesor buscar(Integer id) {
 		return this.entityManager.find(Profesor.class, id);
+	}
+
+	@Override
+	public List<Profesor> buscarTodos() {
+		TypedQuery<Profesor> query = this.entityManager.createQuery("SELECT p FROM Profesor p ", Profesor.class);
+		return query.getResultList();
 	}
 
 	@Override

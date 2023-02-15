@@ -1,5 +1,7 @@
 package com.example.demo.repository;
 
+import java.util.List;
+
 import com.example.demo.model.Profesor;
 
 public interface IProfesorRepository {
@@ -13,4 +15,6 @@ public interface IProfesorRepository {
 	public void eliminar(Integer id);
 
 	public Profesor buscarPorCedula(String cedula);
+
+	public List<Profesor> buscarTodos();
 }
