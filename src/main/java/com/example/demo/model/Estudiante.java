@@ -37,7 +37,7 @@ public class Estudiante {
 	private BigDecimal salario;
 
 	@OneToMany(mappedBy = "estudiante",fetch = FetchType.LAZY)
-	List<Materia> materias;
+	private List<Materia> materias;
 
 	// set ang gets
 	public Integer getId() {
