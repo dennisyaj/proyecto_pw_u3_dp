@@ -21,8 +21,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.model.Estudiante;
+import com.example.demo.repository.IMateriaRepository;
 import com.example.demo.service.IEstudianteService;
+import com.example.demo.service.IMateriaService;
 import com.example.demo.service.to.EstudianteTo;
+import com.example.demo.service.to.EstudiantenuevoTo;
+import com.example.demo.service.to.MateriaNuevaTo;
 import com.example.demo.service.to.MateriaTo;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
@@ -32,6 +36,8 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @RequestMapping("/estudiantes")
 public class EstudianteControllerRestFul {
 
+	@Autowired
+	private IMateriaService iMateriaService;
 	@Autowired
 	IEstudianteService iEstudianteService;
 
@@ -56,9 +62,9 @@ public class EstudianteControllerRestFul {
 		this.iEstudianteService.actualizarEstudiante(estudiante);
 	}
 
-	@GetMapping(path = "/{id}", produces = MediaType.APPLICATION_XML_VALUE)
-	public ResponseEntity<Estudiante> encontrar(@PathVariable("id") Integer id) {
-		Estudiante estu = this.iEstudianteService.encontrar(id);
+	@GetMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<EstudiantenuevoTo> encontrar(@PathVariable("id") Integer id) {
+		EstudiantenuevoTo estu = this.iEstudianteService.encontrar2(id);
 		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(estu);
 	}
 
@@ -66,17 +72,33 @@ public class EstudianteControllerRestFul {
 	public List<EstudianteTo> encontrarTodosHATEOAS() {
 		List<EstudianteTo> lista = this.iEstudianteService.encontrarTodosTo();
 		for (EstudianteTo estudianteTo : lista) {
-			Link myLink = linkTo(methodOn(EstudianteControllerRestFul.class).buscarMaterias(estudianteTo.getId())).withRel("materias");
+			Link myLink = linkTo(methodOn(EstudianteControllerRestFul.class).buscarMaterias(estudianteTo.getId()))
+					.withRel("materias");
+			Link myLink2 = linkTo(methodOn(EstudianteControllerRestFul.class).encontrar(estudianteTo.getId()))
+					.withSelfRel();
+			Link myLink3 = linkTo(EstudianteControllerRestFul.class).slash("prueba").slash("estudiantes")
+					.slash(estudianteTo.getId()).withRel("enlacePrueba");
 			estudianteTo.add(myLink);
+			estudianteTo.add(myLink2);
+			estudianteTo.add(myLink3);
 		}
-
 		return lista;
 	}
 
-	@GetMapping(path = "/{idEstu}/materias")
+	@GetMapping(path = "/{idEstu}/materias", produces = MediaType.APPLICATION_JSON_VALUE)
 	public List<MateriaTo> buscarMaterias(@PathVariable("idEstu") Integer idEstu) {
-
-		return null;
+		List<MateriaTo> list = this.iMateriaService.buscarPorEstudiante(idEstu);
+		for (MateriaTo materiaTo : list) {
+			Link myLink = linkTo(methodOn(EstudianteControllerRestFul.class).buscarMateriasPorID(idEstu, materiaTo.getId()))
+					.withSelfRel();
+			materiaTo.add(myLink);
+		}
+		return list;
+	}
+	
+	@GetMapping(path = "/{idEstu}/materias/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+	public MateriaNuevaTo buscarMateriasPorID(@PathVariable("idEstu") Integer idEstu,@PathVariable("id") Integer id) {
+		return this.iMateriaService.buscarMateria(id);
 	}
 
 	@GetMapping(path = "/salario")

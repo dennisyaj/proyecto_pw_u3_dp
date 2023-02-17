@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import com.example.demo.model.Estudiante;
 import com.example.demo.repository.IEstudianteRepository;
 import com.example.demo.service.to.EstudianteTo;
+import com.example.demo.service.to.EstudiantenuevoTo;
 
 @Service
 public class EstudianteServiceImpl implements IEstudianteService {
@@ -30,6 +31,11 @@ public class EstudianteServiceImpl implements IEstudianteService {
 	@Override
 	public Estudiante encontrar(Integer id) {
 		return this.iEstudianteRepository.buscar(id);
+	}
+	
+	@Override
+	public EstudiantenuevoTo encontrar2(Integer id) {
+		return this.convertir2(this.iEstudianteRepository.buscar(id));
 	}
 
 	@Override
@@ -56,6 +62,12 @@ public class EstudianteServiceImpl implements IEstudianteService {
 		EstudianteTo estu =new EstudianteTo();
 		estu.setId(estudiante.getId());
 		estu.setFechaNacimiento(estudiante.getFechaNacimiento());
+		estu.setNombre(estudiante.getNombre());
+		estu.setApellido(estudiante.getApellido());
+		return estu;
+	}
+	private EstudiantenuevoTo convertir2(Estudiante estudiante) {
+		EstudiantenuevoTo estu =new EstudiantenuevoTo();
 		estu.setNombre(estudiante.getNombre());
 		estu.setApellido(estudiante.getApellido());
 		return estu;
